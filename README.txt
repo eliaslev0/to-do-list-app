@@ -1,3 +1,3 @@
-To Do List Web Application for CS382 Final Project
+To do list web application for CS382 final project
 
 Bianka Boudreaux, Christian Cyr, Elias Leverett, Benjamin Weber
