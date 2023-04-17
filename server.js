@@ -1,57 +1,45 @@
 const express = require('express')
-const path = require('path')
-const http = require('http')
+const path = require('path');
+const http = require('http');
 const PORT = process.env.PORT || 3000
-const socketio = require('socket.io')
-const app = express()
-const server = http.createServer(app)
-const io = socketio(server)
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
+const app = express();
 
-// set static folder
-app.use(express.static(path.join(__dirname, "public")))
+app.set('view engine', 'ejs');
 
-// start server
-server.listen(PORT, () => console.log(`server running on port ${PORT}`))
+// set static folder and content type
+app.use(express.static(path.join(__dirname, "public"), {
+  type: 'text/javascript'
+}));
 
-// // handle socket connection request from web client
-// const connections = [null, null]
-// io.on('connection', socket => {
-//     // console.log('new ws connection')
-//     // find an available player number
-//     let playerIndex = -1;
-//     for (const i in connections) {
-//         if (connections[i] === null) {
-//             playerIndex = i
-//             break
-//         }
-//     }
+// setting up bodyParser to help read body's of HTTP requests
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
-    
-//     // tell the connecting client what player they are
-//     socket.emit('player-number', playerIndex)
+mongoose.connect('mongodb://127.0.0.1/app', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
 
-//     console.log(`Player ${playerIndex} has connected`)
-//     socket.broadcast.emit('player-connection', playerIndex)
+const db = mongoose.connection;
+
+// connecting to database
+db.on('error', console.error.bind(console, 'MongoDB connection error: '));
+db.once('open', () => {
+  console.log('MongoDB connected');
+});
+
+// object representing the schema we will use for holding our movies in MongoDB
+const listSchema = new Schema({
+  name: String,
+  releaseYear: Number,
+  seen: Boolean,
+  imdbRating: Number
+})
 
 
-//     // ignore player 3
-//     if (playerIndex === -1) return;
+app.listen(PORT, () => console.log(`server running on port ${PORT}`));
 
-//     connections[playerIndex] = false
-//     console.log('player-connection ' + playerIndex)
-//     socket.broadcast.emit('player-connection', playerIndex)
 
-//     // handle disconnect
-//     socket.on('disconnect', () => {
-//         console.log(`player ${playerIndex} disconnected`)
-//         connections[playerIndex] = null
-//         socket.broadcast.emit('player-connection', playerIndex)
-//     })
-
-//     socket.on('set-piece', column => {
-//         // console.log("HERE2HERE2 " + column)
-//         io.emit('set-piece-2', column)
-//         // setPiece(column)
-//     })
-    
-// })
