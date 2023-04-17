@@ -1,0 +1,8 @@
+.task-complete:checked + .task-text {
+    background: #ddd;
+    text-decoration: line-through;
+}
+
+button {
+    cursor: pointer;
+}
