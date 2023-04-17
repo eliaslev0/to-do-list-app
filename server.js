@@ -34,10 +34,16 @@ db.once('open', () => {
 // object representing the schema we will use for holding our movies in MongoDB
 const listSchema = new Schema({
   name: String,
-  releaseYear: Number,
-  seen: Boolean,
-  imdbRating: Number
-})
+});
+
+const taskSchema = new Schema({
+  id: String,
+  listId: String,
+  description: String,
+});
+
+const List = mongoose.model('List', listSchema);
+const Task = mongoose.model('Task', taskSchema);
 
 
 app.listen(PORT, () => console.log(`server running on port ${PORT}`));
