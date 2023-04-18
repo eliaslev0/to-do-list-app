@@ -1,6 +1,8 @@
 const express = require('express')
 const path = require('path');
 const http = require('http');
+//encrypt passwords
+const bcrypt = require('bcryptjs');
 const PORT = process.env.PORT || 3000
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -15,7 +17,7 @@ app.use(express.static(path.join(__dirname, "public"), {
 }));
 
 // setting up bodyParser to help read body's of HTTP requests
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 mongoose.connect('mongodb://127.0.0.1/app', {
@@ -31,20 +33,69 @@ db.once('open', () => {
   console.log('MongoDB connected');
 });
 
+
+
+
 // object representing the schema we will use for holding our movies in MongoDB
 const listSchema = new Schema({
   name: String,
+  user: {
+    type: Schema.Types.ObjectId,
+    //refrencing User line 62
+    ref: "User"
+  },
+  tasks: [{
+    type: Schema.Types.ObjectId,
+    ref: "Task"
+  }]
 });
 
 const taskSchema = new Schema({
   id: String,
-  listId: String,
+  list: {
+    type: Schema.Types.ObjectId,
+    ref: "List"
+  },
   description: String,
 });
 
+const userSchema = new Schema({
+  password: String,
+  email: String,  
+  list: {
+    type: Schema.Types.ObjectId,
+    ref: "List"
+  },
+})
+//list is refrencing user
+const User = mongoose.model('User', userSchema);
+//list to user = 1 to 1 
 const List = mongoose.model('List', listSchema);
+//task to list is one to many
 const Task = mongoose.model('Task', taskSchema);
 
+//signup 
+app.post('/signup', async (req, res) => {
+  let data = req.body;
+  let encryptedPassword = await bcrypt.hash(data.password, 10);
+  const user = new User({
+    email: data.email,
+    password: encryptedPassword,
+    
+  })
+  // const toDoList = new List({
+  //   name: "",
+  //   user: 
+  // })
+
+  const savedUser = await user.save();
+  console.log(savedUser);
+  // console.log(req);
+  return res.send(savedUser);    
+})
+//first pass is the one in the database
+//should return true or false 
+//bcrypt.compare(password, user.password)
 
 app.listen(PORT, () => console.log(`server running on port ${PORT}`));
 
