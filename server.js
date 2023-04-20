@@ -3,6 +3,8 @@ const path = require('path');
 const http = require('http');
 //encrypt passwords
 const bcrypt = require('bcryptjs');
+//encrypt cookie
+const cookieParser = require('cookie-parser');
 const PORT = process.env.PORT || 3000
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -19,6 +21,8 @@ app.use(express.static(path.join(__dirname, "public"), {
 // setting up bodyParser to help read body's of HTTP requests
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(cookieParser());
+
 
 mongoose.connect('mongodb://127.0.0.1/app', {
   useNewUrlParser: true,
@@ -37,6 +41,8 @@ db.once('open', () => {
 
 
 // object representing the schema we will use for holding our movies in MongoDB
+// could connect task directly w/ user on line 60 unless
+// we are going to have multiple lists for same user.
 const listSchema = new Schema({
   name: String,
   user: {
@@ -74,10 +80,27 @@ const List = mongoose.model('List', listSchema);
 //task to list is one to many
 const Task = mongoose.model('Task', taskSchema);
 
+
+//get
+app.get('/', async(req, res) => {
+
+  console.log(req.cookies);
+  const user = await User.findById(req.cookies.userID).exec();
+  console.log(user);
+  if(user){
+    return res.sendFile(path.join(__dirname, "/protected/index.html"));
+  }
+  else{
+    res.redirect('/login.html');
+  }
+})
+
 //signup 
 app.post('/signup', async (req, res) => {
   let data = req.body;
+  //encrypt the password 
   let encryptedPassword = await bcrypt.hash(data.password, 10);
+  //assign encrypted password to user for security purposes
   const user = new User({
     email: data.email,
     password: encryptedPassword,
@@ -92,6 +115,28 @@ app.post('/signup', async (req, res) => {
   console.log(savedUser);
   // console.log(req);
   return res.send(savedUser);    
+})
+
+app.post("/login", async (req, res) => {
+  const data = req.body;
+  console.log(data);
+  console.log(data.email);
+  const foundUser = await User.findOne({ email: data.email }).exec();
+  if(!foundUser){
+    return res.send({error: "User not found.."})
+  }
+  console.log(foundUser);
+  //true if passwords match
+  const compare = await bcrypt.compare(data.password, foundUser.password)
+  if(compare){
+    return res.send(foundUser);
+  }
+  else{
+    return res.send({ error: "Incorrect password.." });
+  }
+  // console.log("compare: " + compare);
+  return data;
+
 })
 //first pass is the one in the database
 //should return true or false 
