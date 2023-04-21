@@ -1,5 +1,4 @@
 // references to all html variables
-
 const tasks_container = document.getElementById("tasks");
 const task_template = document.getElementById("taskTemplate");
 const add_button = document.getElementById("add");
@@ -8,10 +7,29 @@ const delete_button = document.getElementById("delete");
 
 let tasks = getTasks();
 
+function getCookie(cname) {
+    let name = cname + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ca = decodedCookie.split(';');
+    for(let i = 0; i <ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
+}
+
 // get from local storage (temporary)
 function getTasks() {
+    
     const value = localStorage.getItem("todo") || "[]";
-
+    //Use userID to fetch data from backend
+    const userID = getCookie("userID");
+    console.log(userID);
     return JSON.parse(value);
 }
 
@@ -64,6 +82,8 @@ function refreshList() {
 add_button.addEventListener("click", () => {
     addTask();
 });
+
+
 
 
 
