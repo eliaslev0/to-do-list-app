@@ -18,6 +18,10 @@ app.use(express.static(path.join(__dirname, "public"), {
   type: 'text/javascript'
 }));
 
+app.use(express.static(path.join(__dirname, "protected"), {
+  type: 'text/javascript'
+}));
+
 // setting up bodyParser to help read body's of HTTP requests
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -40,8 +44,8 @@ db.once('open', () => {
 
 
 
-// object representing the schema we will use for holding our movies in MongoDB
-// could connect task directly w/ user on line 60 unless
+// object representing the schema we will use for holding our lists in MongoDB
+// could connect task directly w/ user in taskSchema unless
 // we are going to have multiple lists for same user.
 const listSchema = new Schema({
   name: String,
