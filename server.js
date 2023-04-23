@@ -110,10 +110,6 @@ app.post('/signup', async (req, res) => {
     password: encryptedPassword,
     
   })
-  // const toDoList = new List({
-  //   name: "",
-  //   user: 
-  // })
 
   const savedUser = await user.save();
   console.log(savedUser);
@@ -145,6 +141,21 @@ app.post("/login", async (req, res) => {
 //first pass is the one in the database
 //should return true or false 
 //bcrypt.compare(password, user.password)
+
+// REST route for creating a new task list in the database
+app.post('/list', (req, res) => {
+  const { id, list, description } = req.body;
+
+  const taskList = new List({
+    id,
+    list,
+    description
+  });
+
+  taskList.save().then(savedList => {
+    res.redirect('/');
+  });
+});
 
 app.listen(PORT, () => console.log(`server running on port ${PORT}`));
 
