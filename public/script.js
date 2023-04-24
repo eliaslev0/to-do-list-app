@@ -27,7 +27,7 @@ function getCookie(cname) {
 function getTasks() {
     
     const value = localStorage.getItem("todo") || "[]";
-    //Use userID to fetch data from backend
+    // use userID to fetch data from backend
     const userID = getCookie("userID");
     console.log(userID);
     return JSON.parse(value);
@@ -59,6 +59,7 @@ function refreshList() {
     tasks_container.innerHTML = "";
 
     for (const task of tasks) {
+        
         const taskElement = task_template.content.cloneNode(true);
         const descriptionInput = taskElement.querySelector(".task-text");
         const completedInput = taskElement.querySelector(".task-complete");
@@ -71,10 +72,13 @@ function refreshList() {
         });
 
         completedInput.addEventListener("change", () => {
-            updateTask(task, "completed", descriptionInput.checked);
+            if (task.completed)
+                updateTask(task, "completed", false);
+            else
+                updateTask(task, "completed", true);
         });
 
-        tasks_container.appendChild(taskElement)
+        tasks_container.append(taskElement)
     }
 }
 
@@ -82,9 +86,6 @@ function refreshList() {
 add_button.addEventListener("click", () => {
     addTask();
 });
-
-
-
 
 
 refreshList();
