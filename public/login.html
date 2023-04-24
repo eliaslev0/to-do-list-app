@@ -4,35 +4,50 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>To-Do List</title>
+
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Secular One">
 </head>
 <body>
+    <div class="app">
+        <h1>TO-DO LIST</h1>
     <p id ="jsonContent"></p>
-    <h2 >Login</h2>
-    <form id = "login">
-        <label for = "email">
-            email
-        </label>
-        <input type = "text" name = "email"/>
-        <label for = "password">
-            password
-        </label>
-        <input type = "password" name = "password"/> 
-        <input type = "submit" value = "login"/>
-    </form>
+    
+    <div class="use">
+        <h2 >LOGIN</h2>
+        <form id = "login">
+            <label for = "email">
+                Email 
+            </label>
+            <input type = "text" name = "email"/>
+            <br/>
+            <label for = "password">
+                Password 
+            </label>
+            <input type = "password" name = "password"/> 
+            <br/>
+            <input type = "submit" value = "login"/>
+        </form>
+    </div>
 
-    <h2>Signup</h2>
-    <form id = "signup">
-        <label for = "email">
-            email
-        </label>
-        <input type = "text" name = "email"/>
-        <label for = "password">
-            password
-        </label>
-        <input type = "password" name = "password"/>
-        <input type = "submit" value = "signup"/>
-    </form>
+    <div class ="use">
+        <h2>SIGNUP</h2>
+        <form id = "signup">
+            <label for = "email">
+                Email
+            </label>
+            <input type = "text" name = "email"/>
+            <br/>
+            <label for = "password">
+                Password
+            </label>
+            <input type = "password" name = "password"/>
+            <br/>
+            <input type = "submit" value = "signup"/>
+        </form>
+    </div>
+</div>
 
     <script src = "login.js" ></script>
 </body>

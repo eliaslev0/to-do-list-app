@@ -7,11 +7,13 @@
     <title>To Do List App</title>
     <!-- <script src="/socket.io/socket.io.js"></script> -->
     <link rel="stylesheet" href="../public/styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Secular One">
     <script type = "text/javascript" src="../public/script.js" defer></script>
+    
 </head>
 <body>
-    <div>
-        <h1>To Do List</h1>
+    <div class="app">
+        <h1>TO-DO LIST </h1>
         <div id="tasks"></div>
          
         <template id="taskTemplate">
@@ -25,11 +27,9 @@
             <input type="checkbox" class="task-complete">
             <input type="text" class="task-text">
         </div>
-
-
-        
                  
-        <button id="add">Add</button> <button id="delete">Delete</button>
+        <button id="add">Add</button> 
+        <button id="delete">Delete</button>
     </div>
 
 </body>
