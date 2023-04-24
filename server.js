@@ -14,11 +14,11 @@ const app = express();
 app.set('view engine', 'ejs');
 
 // set static folders and content type
-app.use(express.static(path.join(__dirname, "public"), {
+app.use('/public', express.static(path.join(__dirname, "public"), {
   type: 'text/javascript'
 }));
 
-app.use(express.static(path.join(__dirname, "protected"), {
+app.use('/protected', express.static(path.join(__dirname, "protected"), {
   type: 'text/javascript'
 }));
 
@@ -84,17 +84,16 @@ const Task = mongoose.model('Task', taskSchema);
 
 
 //get
-app.get('/', async(req, res) => {
+app.get('/', (req, res) => {
 
-  console.log(req.cookies);
-  const user = await User.findById(req.cookies.userID).exec();
-  console.log(user);
-  if(user){
-    return res.sendFile(path.join(__dirname, "/protected/index.html"));
-  }
-  else{
-    res.redirect('/public/login.html');
-  }
+  //const user = await User.findById(req.cookies.userID).exec();
+  //console.log(user);
+  //if(user){
+  res.sendFile(path.join(__dirname, "/protected/index.html"));
+  //}
+  //else{
+  //  res.redirect('/login.html');
+  //}
 })
 
 //signup 
