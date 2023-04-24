@@ -72,10 +72,10 @@ function refreshList() {
         });
 
         completedInput.addEventListener("change", () => {
-            if (task.completed)
-                updateTask(task, "completed", false);
-            else
+            if (!task.completed)
                 updateTask(task, "completed", true);
+            else
+                updateTask(task, "completed", false);
         });
 
         tasks_container.append(taskElement)
