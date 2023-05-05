@@ -6,6 +6,7 @@ const delete_button = document.getElementById("delete");
 
 
 let tasks = getTasks();
+console.log(tasks);
 
 function getCookie(cname) {
     let name = cname + "=";
@@ -36,6 +37,7 @@ function getTasks() {
 function setTasks(tasks) {
     const tasksJson = JSON.stringify(tasks);
 
+
     localStorage.setItem("todo", tasksJson);
 }
 
@@ -51,6 +53,18 @@ function addTask() {
 
 function updateTask(task, key, value) {
     task[key] = value;
+    setTasks(tasks);
+    refreshList();
+}
+
+function deleteCompleted() {
+    for (const task of tasks) {
+        if (task.completed) {
+            delete tasks.task;
+            localStorage.removeItem("todo");
+            tasks = getTasks();
+        }
+    }
     setTasks(tasks);
     refreshList();
 }
@@ -85,6 +99,10 @@ function refreshList() {
 
 add_button.addEventListener("click", () => {
     addTask();
+});
+
+delete_button.addEventListener("click", () => {
+    deleteCompleted();
 });
 
 
