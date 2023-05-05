@@ -58,15 +58,15 @@ function updateTask(task, key, value) {
 }
 
 function deleteCompleted() {
+    tasks = getTasks();
     for (const task of tasks) {
         if (task.completed) {
-            delete tasks.task;
-            localStorage.removeItem("todo");
-            tasks = getTasks();
+            // this filter method of deltion means all equivalient tasks get deleted regardless of completed status, probably should be fixed
+            tasks = tasks.filter(item => item.description != task.description);
+            setTasks(tasks);
+            refreshList();
         }
     }
-    setTasks(tasks);
-    refreshList();
 }
 
 function refreshList() {
