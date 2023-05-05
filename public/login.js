@@ -70,6 +70,9 @@ async function verifyUser(user){
         setCookie("userID",jsonData._id,1);
         window.location.href = "http://localhost:3000/"
     }
+    else{
+        alert("Error: "+jsonData.error);
+    }
     console.log(jsonData);
 }
 

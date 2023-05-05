@@ -84,15 +84,15 @@ const Task = mongoose.model('Task', taskSchema);
 
 
 //get
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
 
-  const user = User.findById(req.cookies.userID).exec();
+  const user = await User.findById(req.cookies.userID).exec();
   console.log(user);
   if(user){
   res.sendFile(path.join(__dirname, "/protected/index.html"));
   }
   else{
-    res.redirect('/login.html');
+    res.redirect('/public/login.html');
   }
 })
 
