@@ -84,4 +84,9 @@ input[type=submit] {
 .userSignUp input[type=text],.userSignUp input[type=password]{
     color: black;
 }
+#logout{
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
 
