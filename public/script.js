@@ -100,6 +100,7 @@ function refreshList() {
 
 add_button.addEventListener("click", () => {
     addTask();
+    addDBTask();
 });
 
 delete_button.addEventListener("click", () => {
@@ -112,4 +113,53 @@ logout_button.addEventListener("click", () =>{
     window.location.href = "http://localhost:3000/public/login.html";
 })
 
+
+
 refreshList();
+let list;
+//new code from Christian
+async function init(){
+    const response = await fetch(`http://localhost:3000/list`);
+    const res = await response.json();
+    //same as if res.length==0
+    if(!res.length){
+        const newList = await fetch(`http://localhost:3000/list`,{
+            method:"POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                name: "TO-DO List"
+            }),
+        });
+        const resNewList = await newList.json();
+        console.log(newList);
+        list = resNewList;
+        console.log(resNewList);
+    }
+    else{
+        //if we use more than one list this needs to be changed
+        list = res[0];
+    }
+    
+    console.log(res);
+}
+
+async function addDBTask(){
+
+    const newTask = await fetch(`http://localhost:3000/task`,{
+        method:"POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            list: list._id,
+            description: "",
+            completed: false
+        }),
+    });
+    const res = await newTask.json();
+    console.log(res);
+    console.log("new task: ", newTask);
+}
+init();

@@ -65,6 +65,7 @@ const taskSchema = new Schema({
     ref: "List"
   },
   description: String,
+  completed: Boolean
 });
 
 const userSchema = new Schema({
@@ -76,11 +77,11 @@ const userSchema = new Schema({
   },
 })
 //list is refrencing user
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema, 'users');
 //list to user = 1 to 1 
-const List = mongoose.model('List', listSchema);
+const List = mongoose.model('List', listSchema,'lists');
 //task to list is one to many
-const Task = mongoose.model('Task', taskSchema);
+const Task = mongoose.model('Task', taskSchema, 'tasks');
 
 
 //get
@@ -137,35 +138,43 @@ app.post("/login", async (req, res) => {
 })
 
 // REST route for creating a new list in the database
-app.post('/list', (req, res) => {
-  const { name, user, tasks} = req.body;
+app.post('/list', async (req, res) => {
+  const user = req.cookies.userID;
+  const { name} = req.body;
 
   const taskList = new List({
     name,
-    user,
-    tasks
+    user
   });
-
-  taskList.save().then(savedList => {
-    res.redirect('/');
-  });
+  const list = await taskList.save();
+  return res.send(list);
+  
 });
 
 // REST route for creating a new task
-app.post('/task', (req, res) => {
-  const { id, list, description } = req.body;
+app.post('/task', async (req, res) => {
+  const { list, description, completed } = req.body;
 
   const task = new Task({
-    id,
     list,
-    description
+    description,
+    completed
   });
 
-  task.save().then(savedTask => {
-    res.redirect('/');
-  });
+  const newTask = await task.save();
+  return res.send(newTask);
 });
 
+app.get('/list', async (req, res) => {
+  const user = req.cookies.userID;
+  if(!user){
+    return res.send({ error: "User not logged in." });
+  }
+  const foundList = await List.findOne({ user: user}).populate('tasks').exec();
+  console.log(foundList);
+  return res.send(foundList);
+
+})
 app.listen(PORT, () => console.log(`server running on port ${PORT}`));
 
 
