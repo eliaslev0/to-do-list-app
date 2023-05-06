@@ -1,32 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>To Do List App</title>
     <!-- <script src="/socket.io/socket.io.js"></script> -->
-    <link rel="stylesheet" href="../public/styles.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Secular One">
-    <script type = "text/javascript" src="../public/script.js" defer></script>
-    
-</head>
-<body>
+    <link rel="stylesheet" href="../public/styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Secular One"
+    />
+    <script type="text/javascript" src="../public/script.js" defer></script>
+  </head>
+  <body>
     <div class="app">
-        <h1>TO-DO LIST </h1>
-        <div id="tasks"></div>
-         
-        <template id="taskTemplate">
-            <div class="task">
-                <input type="checkbox" class="task-complete">
-                <input type="text" class="task-text">
-            </div>
-        </template>
-                 
-        <button id="add">Add</button> 
-        <button id="delete">Delete</button>
+      <h1>TO-DO LIST</h1>
+      <div id="tasks"></div>
+
+      <template id="taskTemplate">
+        <div class="task">
+          <input type="checkbox" class="task-complete" />
+          <input type="text" class="task-text" /><br />
+          <input type="date" class="task-date" />
+          <select name="recurring" class="task-recurring">
+            <option
+              value="none"
+              disabled
+              selected
+              value
+              style="color: rgb(122, 122, 122)"
+            >
+              Repeat
+            </option>
+            <option value="daily">Daily</option>
+            <option value="monthly">Monthly</option>
+            <option value="weekly">Weekly</option>
+          </select>
+        </div>
+      </template>
+
+      <button id="add">Add</button>
+      <button id="delete">Delete</button>
     </div>
     <button id="logout">Logout</button>
-
-</body>
+  </body>
 </html>
