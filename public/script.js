@@ -44,7 +44,7 @@ function addTask() {
     description: "",
     completed: false,
     dateValue: "",
-    isRecurring: "",
+    repeat: "none",
   });
 
   setTasks(tasks);
