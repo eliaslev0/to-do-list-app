@@ -71,6 +71,8 @@ async function verifyUser(user){
         window.location.href = "http://localhost:3000/"
     }
     else{
+        //sending back error message from server
+        //if you login w/ bad credential
         alert("Error: "+jsonData.error);
     }
     console.log(jsonData);

@@ -100,6 +100,7 @@ function refreshList() {
 
 add_button.addEventListener("click", () => {
     addTask();
+    //testing out data base
     addDBTask();
 });
 
@@ -107,27 +108,36 @@ delete_button.addEventListener("click", () => {
     deleteCompleted();
 });
 
+//logout button deletes the cookie
 logout_button.addEventListener("click", () =>{
     console.log("registered click for logout");
     document.cookie = 'userID=; Max-Age=0; path=/;';
+    //redirecting public/login.html
     window.location.href = "http://localhost:3000/public/login.html";
 })
 
 
 
 refreshList();
-let list;
+///////////////////////////////////////////////////////////////////
 //new code from Christian
+let list;
+
 async function init(){
+    //for get
     const response = await fetch(`http://localhost:3000/list`);
+    //read and parse data from response
     const res = await response.json();
-    //same as if res.length==0
+    console.log("res "+res);
+    //check if array has content if not make another call to create list
     if(!res.length){
+        //post to create list
         const newList = await fetch(`http://localhost:3000/list`,{
             method:"POST",
             headers: {
                 "Content-Type": "application/json"
             },
+            //passing in default name of the list. Same as in browser
             body: JSON.stringify({
                 name: "TO-DO List"
             }),
@@ -139,12 +149,13 @@ async function init(){
     }
     else{
         //if we use more than one list this needs to be changed
+        //creating one list
         list = res[0];
     }
     
     console.log(res);
 }
-
+//post request to task endpoint
 async function addDBTask(){
 
     const newTask = await fetch(`http://localhost:3000/task`,{
@@ -159,7 +170,7 @@ async function addDBTask(){
         }),
     });
     const res = await newTask.json();
-    console.log(res);
+    console.log("parsed "+res);
     console.log("new task: ", newTask);
 }
 init();

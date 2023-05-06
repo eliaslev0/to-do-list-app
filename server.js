@@ -57,7 +57,7 @@ const listSchema = new Schema({
     ref: "Task"
   }]
 });
-
+//changed based off script.js
 const taskSchema = new Schema({
   id: String,
   list: {
@@ -93,6 +93,7 @@ app.get('/', async (req, res) => {
   res.sendFile(path.join(__dirname, "/protected/index.html"));
   }
   else{
+    //public needed
     res.redirect('/public/login.html');
   }
 })
@@ -147,6 +148,7 @@ app.post('/list', async (req, res) => {
     user
   });
   const list = await taskList.save();
+  //send back list
   return res.send(list);
   
 });
@@ -154,7 +156,7 @@ app.post('/list', async (req, res) => {
 // REST route for creating a new task
 app.post('/task', async (req, res) => {
   const { list, description, completed } = req.body;
-
+  //what is required from task schema - id
   const task = new Task({
     list,
     description,
@@ -164,12 +166,15 @@ app.post('/task', async (req, res) => {
   const newTask = await task.save();
   return res.send(newTask);
 });
-
+//route to get list
 app.get('/list', async (req, res) => {
   const user = req.cookies.userID;
+  //don't look in database if their is no user cookie
+  //Shouldn't reach this point because we shouldn't reach list w/out being logged in
   if(!user){
     return res.send({ error: "User not logged in." });
   }
+  //looking up list by the user id
   const foundList = await List.findOne({ user: user}).populate('tasks').exec();
   console.log(foundList);
   return res.send(foundList);
