@@ -13,12 +13,12 @@ const app = express();
 
 app.set('view engine', 'ejs');
 
-// set static folder and content type
-app.use(express.static(path.join(__dirname, "public"), {
+// set static folders and content type
+app.use('/public', express.static(path.join(__dirname, "public"), {
   type: 'text/javascript'
 }));
 
-app.use(express.static(path.join(__dirname, "protected"), {
+app.use('/protected', express.static(path.join(__dirname, "protected"), {
   type: 'text/javascript'
 }));
 
@@ -45,8 +45,6 @@ db.once('open', () => {
 
 
 // object representing the schema we will use for holding our lists in MongoDB
-// could connect task directly w/ user in taskSchema unless
-// we are going to have multiple lists for same user.
 const listSchema = new Schema({
   name: String,
   user: {
@@ -86,16 +84,15 @@ const Task = mongoose.model('Task', taskSchema);
 
 
 //get
-app.get('/', async(req, res) => {
+app.get('/', async (req, res) => {
 
-  console.log(req.cookies);
   const user = await User.findById(req.cookies.userID).exec();
   console.log(user);
   if(user){
-    return res.sendFile(path.join(__dirname, "/protected/index.html"));
+  res.sendFile(path.join(__dirname, "/protected/index.html"));
   }
   else{
-    res.redirect('/login.html');
+    res.redirect('/public/login.html');
   }
 })
 
@@ -138,21 +135,33 @@ app.post("/login", async (req, res) => {
   return data;
 
 })
-//first pass is the one in the database
-//should return true or false 
-//bcrypt.compare(password, user.password)
 
-// REST route for creating a new task list in the database
+// REST route for creating a new list in the database
 app.post('/list', (req, res) => {
-  const { id, list, description } = req.body;
+  const { name, user, tasks} = req.body;
 
   const taskList = new List({
+    name,
+    user,
+    tasks
+  });
+
+  taskList.save().then(savedList => {
+    res.redirect('/');
+  });
+});
+
+// REST route for creating a new task
+app.post('/task', (req, res) => {
+  const { id, list, description } = req.body;
+
+  const task = new Task({
     id,
     list,
     description
   });
 
-  taskList.save().then(savedList => {
+  task.save().then(savedTask => {
     res.redirect('/');
   });
 });

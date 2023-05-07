@@ -60,8 +60,8 @@ function addTask() {
     description: "",
     completed: false,
     dateValue: "",
-    repeat: "none",
-
+    repeat: "none"
+    
     //color: ""
   });
 
@@ -84,7 +84,7 @@ function deleteCompleted() {
 
 function refreshList() {
   tasks_container.innerHTML = "";
-
+  
   for (const task of tasks) {
     const taskElement = task_template.content.cloneNode(true);
     const descriptionInput = taskElement.querySelector(".task-text");

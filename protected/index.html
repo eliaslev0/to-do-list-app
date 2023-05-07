@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>TO-DO LIST</title>
     <!-- <script src="/socket.io/socket.io.js"></script> -->
     <link rel="stylesheet" href="../public/styles.css" />
@@ -29,12 +30,9 @@
                 <li> <button id="logout">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                 </button></li>
-
-                
             </ul>
     </nav>
   </div>
-
     <div class="app">
       <h1>TO-DO LIST</h1>
       <div id="tasks"></div>
@@ -53,11 +51,11 @@
             >
               Repeat
             </option>
-            
             <option value="daily">Daily</option>
             <option value="monthly">Monthly</option>
             <option value="weekly">Weekly</option>
           </select>
+
 
           <select > <!--class="task-color"-->
             <option value="" selected disabled>Category</option>
