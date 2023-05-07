@@ -59,14 +59,9 @@ function updateTask(task, key, value) {
 
 function deleteCompleted() {
   tasks = getTasks();
-  for (const task of tasks) {
-    if (task.completed) {
-      // this filter method of deltion means all equivalient tasks get deleted regardless of completed status, probably should be fixed
-      tasks = tasks.filter((item) => item.description != task.description);
-      setTasks(tasks);
-      refreshList();
-    }
-  }
+  tasks = tasks.filter((item) => item.completed == false);
+  setTasks(tasks);
+  refreshList();
 }
 
 function refreshList() {
