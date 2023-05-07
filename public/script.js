@@ -1,9 +1,14 @@
+// Newest script from Eli
+
 // references to all html variables
 const tasks_container = document.getElementById("tasks");
 const task_template = document.getElementById("taskTemplate");
 const add_button = document.getElementById("add");
 const delete_button = document.getElementById("delete");
-const logout_button = document.getElementById("logout");
+
+const about_button = document.getElementById("about");
+const home_button = document.getElementById("home");
+const notif_button = document.getElementById("notif");
 
 let tasks = getTasks();
 console.log(tasks);
@@ -23,6 +28,20 @@ function getCookie(cname) {
   }
   return "";
 }
+
+// Used for local storage of the username
+const nameInput = document.querySelector("#name");
+
+window.addEventListener("load", () => {
+  todos = JSON.parse(localStorage.getItem("todo")) || "[]";
+
+  const username = localStorage.getItem("username") || "";
+  nameInput.value = username;
+
+  nameInput.addEventListener("change", (e) => {
+    localStorage.setItem("username", e.target.value);
+  });
+});
 
 // get from local storage (temporary)
 function getTasks() {
@@ -45,6 +64,8 @@ function addTask() {
     completed: false,
     dateValue: "",
     repeat: "none",
+
+    color: "",
   });
 
   setTasks(tasks);
@@ -74,10 +95,14 @@ function refreshList() {
     const dateInput = taskElement.querySelector(".task-date");
     const repeatTask = taskElement.querySelector(".task-recurring");
 
+    const colorTask = taskElement.querySelector(".task-color");
+
     descriptionInput.value = task.description;
     completedInput.checked = task.completed;
     dateInput.value = task.date;
     repeatTask.value = task.repeat;
+
+    colorTask.value = task.color;
 
     descriptionInput.addEventListener("change", () => {
       updateTask(task, "description", descriptionInput.value);
@@ -96,6 +121,10 @@ function refreshList() {
       updateTask(task, "repeat", repeatTask.value);
     });
 
+    colorTask.addEventListener("change", () => {
+      updateTask(task, "color", colorTask.value);
+    });
+
     tasks_container.append(taskElement);
   }
 }
@@ -108,10 +137,25 @@ delete_button.addEventListener("click", () => {
   deleteCompleted();
 });
 
-logout_button.addEventListener("click", () => {
-  console.log("registered click for logout");
-  document.cookie = "userID=; Max-Age=0; path=/;";
-  window.location.href = "http://localhost:3000/public/login.html";
+about_button.addEventListener("click", () => {
+  window.location.href = "http://localhost:3000/public/about.html";
 });
 
+home_button.addEventListener("click", () => {
+  window.location.href = "http://localhost:3000/protected/index.html";
+});
+
+function showNotif() {
+  const notification = new Notification("To-Do List", {
+    body: "Tasks left to Complete",
+  });
+}
+
+notif_button.addEventListener("click", () => {
+  Notification.requestPermission().then((perm) => {
+    if (perm === "granted") {
+      showNotif();
+    }
+  });
+});
 refreshList();
