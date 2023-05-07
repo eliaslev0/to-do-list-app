@@ -7,6 +7,10 @@ const add_button = document.getElementById("add");
 const delete_button = document.getElementById("delete");
 const logout_button = document.getElementById("logout");
 
+const about_button = document.getElementById("about");
+const home_button = document.getElementById("home");
+const notif_button = document.getElementById("notif");
+
 let tasks = getTasks();
 console.log(tasks);
 
@@ -141,4 +145,25 @@ logout_button.addEventListener("click", () => {
   window.location.href = "http://localhost:3000/public/login.html";
 });
 
+about_button.addEventListener("click", () => {
+  window.location.href = "http://localhost:3000/public/about.html";
+});
+
+home_button.addEventListener("click", () => {
+  window.location.href = "http://localhost:3000/protected/index.html";
+});
+
+function showNotif() { 
+  const notification = new Notification("To-Do List", {
+    body: "Tasks left to Complete"
+  });
+}
+
+notif_button.addEventListener("click", () => {
+  Notification.requestPermission().then(perm => {
+    if( perm === "granted") { 
+      showNotif(); 
+    }
+  })
+});
 refreshList();
