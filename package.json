@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@rschedule/core": "^1.5.0",
+    "@rschedule/standard-date-adapter": "^1.5.0",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",
     "express": "^4.18.2",

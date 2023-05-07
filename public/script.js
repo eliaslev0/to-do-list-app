@@ -115,10 +115,48 @@ function refreshList() {
 
     dateInput.addEventListener("change", () => {
       updateTask(task, "date", dateInput.value);
+      console.log(dateInput.value);
     });
 
     repeatTask.addEventListener("change", () => {
       updateTask(task, "repeat", repeatTask.value);
+      console.log(repeatTask.value);
+
+      var dateEntered = new Date(dateInput.value);
+      dateEntered.setDate(dateEntered.getDate() + 1);
+      // console.log(dateEntered);
+
+      if (repeatTask.value == "daily") {
+        console.log("DAILY " + dateEntered);
+        dateEntered.setDate(dateEntered.getDate() + 1);
+        console.log("DAILY " + dateEntered);
+        dateEntered.setDate(dateEntered.getDate() + 1);
+        console.log("DAILY " + dateEntered);
+        dateEntered.setDate(dateEntered.getDate() + 1);
+        console.log("DAILY " + dateEntered);
+        dateEntered.setDate(dateEntered.getDate() + 1);
+        console.log("DAILY " + dateEntered);
+      } else if (repeatTask.value == "weekly") {
+        console.log("WEEKLY " + dateEntered);
+        dateEntered.setDate(dateEntered.getDate() + 7);
+        console.log("WEEKLY " + dateEntered);
+        dateEntered.setDate(dateEntered.getDate() + 7);
+        console.log("WEEKLY " + dateEntered);
+        dateEntered.setDate(dateEntered.getDate() + 7);
+        console.log("WEEKLY " + dateEntered);
+        dateEntered.setDate(dateEntered.getDate() + 7);
+        console.log("WEEKLY " + dateEntered);
+      } else if (repeatTask.value == "yearly") {
+        console.log("YEARLY " + dateEntered);
+        dateEntered.setDate(dateEntered.getDate() + 366);
+        console.log("YEARLY " + dateEntered);
+        dateEntered.setDate(dateEntered.getDate() + 365);
+        console.log("YEARLY " + dateEntered);
+        dateEntered.setDate(dateEntered.getDate() + 365);
+        console.log("YEARLY " + dateEntered);
+        dateEntered.setDate(dateEntered.getDate() + 365);
+        console.log("YEARLY " + dateEntered);
+      }
     });
 
     colorTask.addEventListener("change", () => {
