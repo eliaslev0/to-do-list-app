@@ -5,7 +5,6 @@ const tasks_container = document.getElementById("tasks");
 const task_template = document.getElementById("taskTemplate");
 const add_button = document.getElementById("add");
 const delete_button = document.getElementById("delete");
-const logout_button = document.getElementById("logout");
 
 const about_button = document.getElementById("about");
 const home_button = document.getElementById("home");
@@ -139,11 +138,7 @@ delete_button.addEventListener("click", () => {
   deleteCompleted();
 });
 
-logout_button.addEventListener("click", () => {
-  console.log("registered click for logout");
-  document.cookie = "userID=; Max-Age=0; path=/;";
-  window.location.href = "http://localhost:3000/public/login.html";
-});
+
 
 about_button.addEventListener("click", () => {
   window.location.href = "http://localhost:3000/public/about.html";
