@@ -127,35 +127,20 @@ function refreshList() {
       // console.log(dateEntered);
 
       if (repeatTask.value == "daily") {
-        console.log("DAILY " + dateEntered);
-        dateEntered.setDate(dateEntered.getDate() + 1);
-        console.log("DAILY " + dateEntered);
-        dateEntered.setDate(dateEntered.getDate() + 1);
-        console.log("DAILY " + dateEntered);
-        dateEntered.setDate(dateEntered.getDate() + 1);
-        console.log("DAILY " + dateEntered);
-        dateEntered.setDate(dateEntered.getDate() + 1);
-        console.log("DAILY " + dateEntered);
+        for (let i = 0; i < 10; i++) {
+          console.log("DAILY " + dateEntered);
+          dateEntered.setDate(dateEntered.getDate() + 1);
+        }
       } else if (repeatTask.value == "weekly") {
-        console.log("WEEKLY " + dateEntered);
-        dateEntered.setDate(dateEntered.getDate() + 7);
-        console.log("WEEKLY " + dateEntered);
-        dateEntered.setDate(dateEntered.getDate() + 7);
-        console.log("WEEKLY " + dateEntered);
-        dateEntered.setDate(dateEntered.getDate() + 7);
-        console.log("WEEKLY " + dateEntered);
-        dateEntered.setDate(dateEntered.getDate() + 7);
-        console.log("WEEKLY " + dateEntered);
+        for (let i = 0; i < 10; i++) {
+          console.log("WEEKLY " + dateEntered);
+          dateEntered.setDate(dateEntered.getDate() + 7);
+        }
       } else if (repeatTask.value == "yearly") {
-        console.log("YEARLY " + dateEntered);
-        dateEntered.setDate(dateEntered.getDate() + 366);
-        console.log("YEARLY " + dateEntered);
-        dateEntered.setDate(dateEntered.getDate() + 365);
-        console.log("YEARLY " + dateEntered);
-        dateEntered.setDate(dateEntered.getDate() + 365);
-        console.log("YEARLY " + dateEntered);
-        dateEntered.setDate(dateEntered.getDate() + 365);
-        console.log("YEARLY " + dateEntered);
+        for (let i = 0; i < 10; i++) {
+          console.log("YEARLY " + dateEntered);
+          dateEntered.setDate(dateEntered.getDate() + 365);
+        }
       }
     });
 
