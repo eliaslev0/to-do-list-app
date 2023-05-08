@@ -10,8 +10,25 @@ const about_button = document.getElementById("about");
 const home_button = document.getElementById("home");
 const notif_button = document.getElementById("notif");
 
+const datesList = [];
+
 let tasks = getTasks();
 console.log(tasks);
+
+// unfinished, called once a day, checks through array of dates set (recurring) and if current day matches day set in list, sends notification.
+var dayInMilliseconds = 1000 * 60 * 60 * 24;
+setTimeout(function () {
+  alert("test");
+  let i = 0;
+  const date = new Date();
+  while (i < datesList.length) {
+    if (date == datesList[i]) {
+      const notification = new Notification("To-Do List", {
+        body: "Tasks left to Complete",
+      });
+    }
+  }
+}, dayInMilliseconds);
 
 function getCookie(cname) {
   let name = cname + "=";
@@ -126,22 +143,28 @@ function refreshList() {
       dateEntered.setDate(dateEntered.getDate() + 1);
       // console.log(dateEntered);
 
+      // recurring task functionality, shows first 10 instances and adds them to an array. array is checked in separate function
       if (repeatTask.value == "daily") {
         for (let i = 0; i < 10; i++) {
-          console.log("DAILY " + dateEntered);
+          // console.log("DAILY " + dateEntered);
+          datesList.push(dateEntered);
           dateEntered.setDate(dateEntered.getDate() + 1);
         }
       } else if (repeatTask.value == "weekly") {
         for (let i = 0; i < 10; i++) {
-          console.log("WEEKLY " + dateEntered);
+          // console.log("WEEKLY " + dateEntered);
+          datesList.push(dateEntered);
           dateEntered.setDate(dateEntered.getDate() + 7);
         }
       } else if (repeatTask.value == "yearly") {
         for (let i = 0; i < 10; i++) {
-          console.log("YEARLY " + dateEntered);
+          // console.log("YEARLY " + dateEntered);
+          datesList.push(dateEntered);
           dateEntered.setDate(dateEntered.getDate() + 365);
         }
       }
+
+      console.info(datesList);
     });
 
     colorTask.addEventListener("change", () => {
