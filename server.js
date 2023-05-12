@@ -47,6 +47,7 @@ db.once("open", () => {
 });
 
 // object representing the schema we will use for holding our lists in MongoDB
+//TODO: delete
 const listSchema = new Schema({
   name: String,
   user: {
@@ -63,15 +64,20 @@ const listSchema = new Schema({
 });
 
 const taskSchema = new Schema({
-  id: String,
-  list: {
-    type: Schema.Types.ObjectId,
-    ref: "List",
-  },
+  id: Schema.Types.ObjectId,
   description: String,
+  completed: Boolean,
+  dateValue: String,
+  repeat: String,
+  color: String,
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: "User"
+  }
 });
 
 const userSchema = new Schema({
+  id: Schema.Types.ObjectId,
   password: String,
   email: String,
   list: {
@@ -97,6 +103,7 @@ app.get("/", async (req, res) => {
   }
 });
 
+
 //signup
 app.post("/signup", async (req, res) => {
   let data = req.body;
@@ -120,13 +127,13 @@ app.post("/login", async (req, res) => {
   console.log(data.email);
   const foundUser = await User.findOne({ email: data.email }).exec();
   if (!foundUser) {
-    return res.send({ error: "User not found.." });
+    return res.status(404).send({ error: "User not found.." });
   }
   console.log(foundUser);
   //true if passwords match
   const compare = await bcrypt.compare(data.password, foundUser.password);
   if (compare) {
-    return res.send(foundUser);
+    return res.status(200).send(foundUser);
   } else {
     return res.send({ error: "Incorrect password.." });
   }
@@ -145,23 +152,73 @@ app.post("/list", (req, res) => {
   });
 
   taskList.save().then((savedList) => {
-    res.redirect("/");
+    res.status(201).json(taskList)
   });
 });
+
+//get all tasks based on associated user id
+app.get('/tasks', async (req, res) => {
+  //tasks for all users
+  //tasks find for THIS user
+  //
+  //645ea5352b0dc49528dc8149
+  const tasks = await Task
+  // .find({'user': req.cookies.userID})
+  // .populate('user')
+  .find()
+  .exec()
+  .then(result => {
+    res.status(200).json(result);
+  }).catch(err => {
+    res.status(500)
+  })
+})
+
+//TODO: possibly delete
+app.get('/task/:taskId', async (req, res) => {
+  const id = req.params.taskId;
+  const task = await Task.findOne({_id: req.body.id})
+  .exec()
+  .then();
+})
 
 // REST route for creating a new task
 app.post("/task", (req, res) => {
-  const { id, list, description } = req.body;
-
-  const task = new Task({
-    id,
-    list,
-    description,
-  });
+  const task = new Task(req.body);
 
   task.save().then((savedTask) => {
-    res.redirect("/");
+    res.status(201).json(savedTask)
   });
 });
 
+app.put("/task/:taskId", (req, res) => {
+  const {description, completed, dateValue, repeat, color} = req.body;
+  const id = req.params.taskId;
+
+  Task.updateOne({_id: id}, {$set: {description, completed, dateValue, repeat, color}})
+  .exec()
+  .then(result => {
+    res.status(200).json(result);
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(500).json({message: "an error occurred"});
+  });
+})
+
+//TODO: hit delete endpoint to delete items
+app.delete("/task/:taskId", (req, res) => {
+  const id = req.params.taskId;
+  //TODO: add callbacks to 'then' and 'catch' for handling delete
+  Task.deleteOne({_id: id}).exec()
+  .then()
+  .catch();
+})
+
 app.listen(PORT, () => console.log(`server running on port ${PORT}`));
+
+// description: String,
+// completed: Boolean,
+// dateValue: String,
+// repeat: String,
+// color: String,

@@ -12,7 +12,8 @@ const notif_button = document.getElementById("notif");
 
 const datesList = [];
 
-let tasks = getTasks();
+let tasks = [];
+getTasks();
 console.log(tasks);
 
 // unfinished, called once a day, checks through array of dates set (recurring) and if current day matches day set in list, sends notification.
@@ -61,12 +62,18 @@ window.addEventListener("load", () => {
 });
 
 // get from local storage (temporary)
-function getTasks() {
-  const value = localStorage.getItem("todo") || "[]";
-  // use userID to fetch data from backend
-  const userID = getCookie("userID");
-  console.log(userID);
-  return JSON.parse(value);
+async function getTasks() {
+  // const value = localStorage.getItem("todo") || "[]";
+  const response = await fetch(`http://localhost:3000/tasks`,{
+    method:"GET",
+    headers: {
+        "Content-Type": "application/json"
+    },
+});
+
+
+  tasks = await response.json();
+  refreshList();
 }
 
 function setTasks(tasks) {
@@ -75,26 +82,32 @@ function setTasks(tasks) {
   localStorage.setItem("todo", tasksJson);
 }
 
-function addTask() {
-  tasks.unshift({
+async function addTask() {
+  const userID = getCookie("userID");
+  console.log("userID", userID);
+
+  const newTask = {
     description: "",
     completed: false,
     dateValue: "",
     repeat: "none",
-
     color: "",
-  });
+    user: userID
+  };
 
-  setTasks(tasks);
+  const task = await saveToDatabase(newTask);
+  tasks.unshift(task);
   refreshList();
 }
 
-function updateTask(task, key, value) {
+async function updateTask(task, key, value) {
   task[key] = value;
-  setTasks(tasks);
+
+  await updateInDatabase(task);
   refreshList();
 }
 
+//TODO: use backend delete endpoint
 function deleteCompleted() {
   tasks = getTasks();
   tasks = tasks.filter((item) => item.completed == false);
@@ -121,22 +134,22 @@ function refreshList() {
 
     colorTask.value = task.color;
 
-    descriptionInput.addEventListener("change", () => {
-      updateTask(task, "description", descriptionInput.value);
+    descriptionInput.addEventListener("change", async () => {
+      await updateTask(task, "description", descriptionInput.value);
     });
 
-    completedInput.addEventListener("change", () => {
+    completedInput.addEventListener("change", async () => {
       if (!task.completed) updateTask(task, "completed", true);
       else updateTask(task, "completed", false);
     });
 
-    dateInput.addEventListener("change", () => {
-      updateTask(task, "date", dateInput.value);
+    dateInput.addEventListener("change", async () => {
+      await updateTask(task, "date", dateInput.value);
       console.log(dateInput.value);
     });
 
-    repeatTask.addEventListener("change", () => {
-      updateTask(task, "repeat", repeatTask.value);
+    repeatTask.addEventListener("change", async () => {
+      await updateTask(task, "repeat", repeatTask.value);
       console.log(repeatTask.value);
 
       var dateEntered = new Date(dateInput.value);
@@ -167,16 +180,16 @@ function refreshList() {
       console.info(datesList);
     });
 
-    colorTask.addEventListener("change", () => {
-      updateTask(task, "color", colorTask.value);
+    colorTask.addEventListener("change", async () => {
+      await updateTask(task, "color", colorTask.value);
     });
 
     tasks_container.append(taskElement);
   }
 }
 
-add_button.addEventListener("click", () => {
-  addTask();
+add_button.addEventListener("click", async () => {
+  await addTask();
 });
 
 delete_button.addEventListener("click", () => {
@@ -204,4 +217,30 @@ notif_button.addEventListener("click", () => {
     }
   });
 });
+
 refreshList();
+
+async function  saveToDatabase(newTask) {
+  const response = await fetch(`http://localhost:3000/task`,{
+      method:"POST",
+      headers: {
+          "Content-Type": "application/json"
+      },
+      body: JSON.stringify(newTask),
+  });
+
+
+  return await response.json();
+}
+
+async function  updateInDatabase(task) {
+  const response = await fetch(`http://localhost:3000/task/${task._id}`,{
+      method:"PUT",
+      headers: {
+          "Content-Type": "application/json"
+      },
+      body: JSON.stringify(task),
+  });
+
+  return await response.json();
+}
