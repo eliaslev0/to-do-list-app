@@ -16,20 +16,30 @@ let tasks = [];
 getTasks();
 console.log(tasks);
 
-// unfinished, called once a day, checks through array of dates set (recurring) and if current day matches day set in list, sends notification.
+// called once a day, checks through array of dates set (recurring) and if current day matches day set in list, sends notification.
 var dayInMilliseconds = 1000 * 60 * 60 * 24;
-setTimeout(function () {
-  alert("test");
-  let i = 0;
-  const date = new Date();
-  while (i < datesList.length) {
-    if (date == datesList[i]) {
+const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+
+async function sendNotifications() {
+  while (datesList.length != 0) {
+    const date = new Date();
+
+    const d = date.toString().substring(0, 15);
+
+    console.log(d);
+
+    if (datesList.includes(d)) {
       const notification = new Notification("To-Do List", {
         body: "Tasks left to Complete",
       });
+    } else {
+      console.log("the date is not contained in the list");
+      console.info(datesList);
+      console.log("date is" + date);
     }
+    await delay(dayInMilliseconds);
   }
-}, dayInMilliseconds);
+}
 
 function getCookie(cname) {
   let name = cname + "=";
@@ -64,13 +74,12 @@ window.addEventListener("load", () => {
 // get from local storage (temporary)
 async function getTasks() {
   // const value = localStorage.getItem("todo") || "[]";
-  const response = await fetch(`http://localhost:3000/tasks`,{
-    method:"GET",
+  const response = await fetch(`http://localhost:3000/tasks`, {
+    method: "GET",
     headers: {
-        "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
-});
-
+  });
 
   tasks = await response.json();
   refreshList();
@@ -92,7 +101,7 @@ async function addTask() {
     dateValue: "",
     repeat: "none",
     color: "",
-    user: userID
+    user: userID,
   };
 
   const task = await saveToDatabase(newTask);
@@ -154,27 +163,29 @@ function refreshList() {
 
       var dateEntered = new Date(dateInput.value);
       dateEntered.setDate(dateEntered.getDate() + 1);
-      // console.log(dateEntered);
 
       // recurring task functionality, shows first 10 instances and adds them to an array. array is checked in separate function
       if (repeatTask.value == "daily") {
         for (let i = 0; i < 10; i++) {
           // console.log("DAILY " + dateEntered);
-          datesList.push(dateEntered);
+          datesList.push(dateEntered.toString().substring(0, 15));
           dateEntered.setDate(dateEntered.getDate() + 1);
         }
+        sendNotifications();
       } else if (repeatTask.value == "weekly") {
         for (let i = 0; i < 10; i++) {
           // console.log("WEEKLY " + dateEntered);
-          datesList.push(dateEntered);
+          datesList.push(dateEntered.toString().substring(0, 15));
           dateEntered.setDate(dateEntered.getDate() + 7);
         }
+        sendNotifications();
       } else if (repeatTask.value == "yearly") {
         for (let i = 0; i < 10; i++) {
           // console.log("YEARLY " + dateEntered);
-          datesList.push(dateEntered);
+          datesList.push(dateEntered.toString().substring(0, 15));
           dateEntered.setDate(dateEntered.getDate() + 365);
         }
+        sendNotifications();
       }
 
       console.info(datesList);
@@ -220,26 +231,25 @@ notif_button.addEventListener("click", () => {
 
 refreshList();
 
-async function  saveToDatabase(newTask) {
-  const response = await fetch(`http://localhost:3000/task`,{
-      method:"POST",
-      headers: {
-          "Content-Type": "application/json"
-      },
-      body: JSON.stringify(newTask),
+async function saveToDatabase(newTask) {
+  const response = await fetch(`http://localhost:3000/task`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(newTask),
   });
-
 
   return await response.json();
 }
 
-async function  updateInDatabase(task) {
-  const response = await fetch(`http://localhost:3000/task/${task._id}`,{
-      method:"PUT",
-      headers: {
-          "Content-Type": "application/json"
-      },
-      body: JSON.stringify(task),
+async function updateInDatabase(task) {
+  const response = await fetch(`http://localhost:3000/task/${task._id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(task),
   });
 
   return await response.json();
