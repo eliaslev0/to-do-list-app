@@ -82,7 +82,10 @@ async function getTasks() {
   });
 
   tasks = await response.json();
+  // console.log("JSON PARSE " + JSON.parse(tasks));
+
   refreshList();
+  return tasks;
 }
 
 function setTasks(tasks) {
@@ -117,10 +120,14 @@ async function updateTask(task, key, value) {
 }
 
 //TODO: use backend delete endpoint
-function deleteCompleted() {
-  tasks = getTasks();
-  tasks = tasks.filter((item) => item.completed == false);
-  setTasks(tasks);
+async function deleteCompleted() {
+  for (const task of tasks) {
+    if (task.completed == true) {
+      console.log(task);
+      await deleteFromDatabase(task);
+    }
+  }
+
   refreshList();
 }
 
@@ -203,8 +210,8 @@ add_button.addEventListener("click", async () => {
   await addTask();
 });
 
-delete_button.addEventListener("click", () => {
-  deleteCompleted();
+delete_button.addEventListener("click", async () => {
+  await deleteCompleted();
 });
 
 about_button.addEventListener("click", () => {
@@ -246,6 +253,18 @@ async function saveToDatabase(newTask) {
 async function updateInDatabase(task) {
   const response = await fetch(`http://localhost:3000/task/${task._id}`, {
     method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(task),
+  });
+
+  return await response.json();
+}
+
+async function deleteFromDatabase(task) {
+  const response = await fetch(`http://localhost:3000/task/${task._id}`, {
+    method: "DELETE",
     headers: {
       "Content-Type": "application/json",
     },
